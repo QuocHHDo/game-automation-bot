@@ -8,15 +8,16 @@ import random
 #import win32api, win32con 
 import win32api, win32con
 #import pywin32
+import sys, os
 import tkinter as tk
 
 class Application(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
-        self.geometry('250x400')
+        self.geometry('250x500')
         self.title('Automation Bot')
 
-        first_label = tk.Label(self, text = "Educational Bot Project", font=10)  
+        first_label = tk.Label(self, text = "Educational Bot Project V2.0", font=10)  
         first_label.pack(pady=2, padx=2)
 
         full_auto_button = tk.Button(self, text = "FULL AUTO", command = full_auto)
@@ -52,40 +53,50 @@ class Application(tk.Tk):
         train = tk.Button(self, text = "Auto Train", command = auto_train)
         train.pack(pady=5, padx=5)
 
-        # Expand Menu if not present 
+        clickTest = tk.Button(self, text = "Click Test", command = click_test)
+        clickTest.pack(pady=5, padx=5)
+
         # Auto Barb 
         # Auto Farm 
 
+def resource_path(relative_path):
+        """ Get the absolute path to the resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
+
+def show_window():
+    windowLocation = pyautogui.locateOnScreen('Images\Window.png', grayscale=True, confidence=0.6)
+    if windowLocation != None: 
+        window_x, window_y = pyautogui.center(windowLocation);
+        leftClick(window_x, window_y)
+    time.sleep(0.3) 
 
 def click(x,y):
     win32api.SetCursorPos((x,y)) 
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
     time.sleep(0.1)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0) 
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)   
 
-def all_auto_1():
-    print("Running All Auto 1")
-    reset() 
-    auto_help()
-    auto_prod()
-    auto_territory()
-    auto_train()
-    # Reset for auto_recruit to work
-    reset()
-    auto_recruit()
-    print("End of All Auto 1")
+    print("Clicked at: " + str(x) + "," + str(y))
 
-def full_auto():
-    all_auto_1()
-    auto_vip()
-    auto_expedition()
-    auto_PVP()
+def leftClick(x,y):
+    pyautogui.moveTo(x,y)
+    pyautogui.mouseDown()
+    time.sleep(0.5) #or whatever you need, if even needed
+    pyautogui.mouseUp()
+    print("Clicked at: " + str(x) + "," + str(y))
+
 
 def reset(): 
     time.sleep(0.3)
     castleButtonLocation = pyautogui.locateOnScreen('./Images/CastleButton.png', grayscale=True, confidence=0.6)
     if castleButtonLocation != None: 
-        click(136,955) 
+        click(136,955)
 
     time.sleep(0.3) 
     # Click on bottom left button 
@@ -102,11 +113,12 @@ def reset():
         # Click on button to display menu
         click(1762,974)
 
-def auto_help(): 
+def auto_help():
+    helpLocation = pyautogui.locateOnScreen('Images\Help.png', grayscale=True, confidence=0.6)
+    if helpLocation != None: 
+        help_x, help_y = pyautogui.center(helpLocation)
+        leftClick(help_x, help_y)
     time.sleep(0.3) 
-    # Check for Alliance Help
-    if pyautogui.pixel(1755, 693)[2] == 0: 
-        click(1755, 693)
 
 def auto_recruit(): 
     time.sleep(0.3)
@@ -160,47 +172,51 @@ def auto_recruit():
         click(81, 87) 
 
 def auto_prod():
+    print("Test")
+
     # Check if Gold Production is ready to be collected
-    goldProdLocation = pyautogui.locateOnScreen('./Images/Gold.png', grayscale=True, confidence=0.8)
+    goldProdLocation = pyautogui.locateOnScreen(resource_path('Images\Gold.png'), grayscale=True, confidence=0.8)
     #if pyautogui.pixel(1198,880)[0] == 235: 
     #if pyautogui.locateOnScreen('Gold.png', grayscale=True, confidence=0.8) != None:
     if goldProdLocation != None: 
         # Collect Gold Production
         #click(1198,880)
         gold_x, gold_y = pyautogui.center(goldProdLocation)
-        click(gold_x, gold_y)
-
+        leftClick(gold_x, gold_y)
     time.sleep(0.3)
+
     # Check if Food Production is ready to be collected
-    foodProdLocation = pyautogui.locateOnScreen('./Images/Food1.png', grayscale=True, confidence=0.8)
+    foodProdLocation = pyautogui.locateOnScreen(resource_path('Images\Food.png'), grayscale=True, confidence=0.8)
     #if pyautogui.pixel(1330,795)[0] == 229: 
     if foodProdLocation != None:
 
         # Collect Farm Production
         #click(1330,795)
         food_x, food_y = pyautogui.center(foodProdLocation)
-        click(food_x, food_y) 
+        leftClick(food_x, food_y) 
 
     time.sleep(0.3)
+
     # Check if Wood Production is ready to be collected
-    woodProdLocation = pyautogui.locateOnScreen('./Images/Wood1.png', grayscale=True, confidence=0.8)
+    woodProdLocation = pyautogui.locateOnScreen(resource_path('Images\Wood.png'), grayscale=True, confidence=0.8)
     #if pyautogui.pixel(963,360)[0] == 225: 
     if woodProdLocation != None:
 
         #Collect Wood Production 
         #click(963,360) 
         wood_x, wood_y = pyautogui.center(woodProdLocation)
-        click(wood_x, wood_y) 
+        leftClick(wood_x, wood_y) 
 
     time.sleep(0.3)
+
     # Check if Stone Production is ready to be collected
-    stoneProdLocation = pyautogui.locateOnScreen('./Images/Stone.png', grayscale=True, confidence=0.8)
+    stoneProdLocation = pyautogui.locateOnScreen(resource_path('Images\Stone.png'), grayscale=True, confidence=0.8)
     #if pyautogui.pixel(875,905)[2] == 232:
     if stoneProdLocation != None:
         # Collect Stone Production 
         #click(875,905)
         stone_x, stone_y = pyautogui.center(stoneProdLocation)
-        click(stone_x, stone_y) 
+        leftClick(stone_x, stone_y)
 
 def auto_territory():
     time.sleep(0.3)
@@ -225,51 +241,111 @@ def auto_territory():
     click(1605,93)
 
 def auto_expedition():
+    # Click on Campaign Button
+    campaignLocation = pyautogui.locateOnScreen('Images\Campaign.png', grayscale=True, confidence=0.6)
+    if campaignLocation != None:
+        campaign_x, campaign_y = pyautogui.center(campaignLocation)
+        leftClick(campaign_x, campaign_y)
     time.sleep(0.3)
 
     # Click on Expedition Button
-    click(1206,964)
-
-    time.sleep(0.3)
-    # Click on Expedition #2 Button
-    click(324,489)
-
-    time.sleep(1)
-    # Click on golden chest 
-    click(219,359)
-
-    time.sleep(0.7)
-    # Click on Exit Button 
-    click(98, 87)
-
-    time.sleep(0.5)
-    # Click on Exit #2 Button 
-    click(98, 87)
-
-def auto_vip(): 
+    expeditionLocation = pyautogui.locateOnScreen('Images\Expedition.png', grayscale=True, confidence=0.6)
+    if expeditionLocation != None:
+        expedition_x, expedition_y = pyautogui.center(expeditionLocation)
+        leftClick(expedition_x, expedition_y)
     time.sleep(0.3)
 
-    # Click on VIP Icon
-    click(258,121)
-
+    # Click on Expedition Chest Button
+    expeditionChestLocation = pyautogui.locateOnScreen('Images\ExpeditionChest.png', grayscale=True, confidence=0.6)
+    if expeditionChestLocation != None:
+        expeditionChest_x, expeditionChest_y = pyautogui.center(expeditionChestLocation)
+        leftClick(expeditionChest_x, expeditionChest_y)
     time.sleep(0.3)
-    # Click on top right chest 
-    click(1459, 280)
-    # Wait for animation and click again to go back to VIP Window
-    time.sleep(2) 
-    click(1459, 280)
 
+    # Click on Expedition Confirm Button
+    expeditionConfirmLocation = pyautogui.locateOnScreen('Images\ExpeditionConfirm.png', grayscale=True, confidence=0.6)
+    if expeditionConfirmLocation != None:
+        expeditionConfirm_x, expeditionConfirm_y = pyautogui.center(expeditionConfirmLocation)
+        leftClick(expeditionConfirm_x, expeditionConfirm_y)
     time.sleep(0.3)
-    # Click on Claim button  
-    click(1378,591)
-
-    # Wait for animation and click again to back to VIP Window
-    time.sleep(2)
-    click(1378,591)
-
+    
+    # Click on Expedition Exit Button
+    campaignExitLocation = pyautogui.locateOnScreen('Images\CampaignExit.png', grayscale=True, confidence=0.6)
+    if campaignExitLocation != None:
+        campaignExit_x, campaignExit_y = pyautogui.center(campaignExitLocation)
+        leftClick(campaignExit_x, campaignExit_y)
     time.sleep(0.3)
+
+    # Under Construction
+
+    # # Click on Sunset Button
+    # sunsetLocation = pyautogui.locateOnScreen('Images\Sunset.png', grayscale=True, confidence=0.6)
+    # if sunsetLocation != None:
+    #     sunset_x, sunset_y = pyautogui.center(sunsetLocation)
+    #     leftClick(sunset_x, sunset_y)
+    # time.sleep(0.3)
+
+    # # Click on Sunset Challenge Button
+    # sunsetChallengeLocation = pyautogui.locateOnScreen('Images\SunsetChallenge.png', grayscale=True, confidence=0.6)
+    # if sunsetChallengeLocation != None:
+    #     sunsetChallenge_x, sunsetChallenge_y = pyautogui.center(sunsetChallengeLocation)
+    #     leftClick(sunsetChallenge_x, sunsetChallenge_y)
+    # time.sleep(0.3)
+
+    # zeroAttemptLocation = pyautogui.locateOnScreen('Images\ZeroAttempt.png', grayscale=True, confidence=0.6)
+    
+    # # Check if Zero Attempt is NOT shown
+    # while zeroAttemptLocation == None:
+    #     # Click on Sunset Challenge Button
+    #     if sunsetChallengeLocation != None:
+    #         sunsetChallenge_x, sunsetChallenge_y = pyautogui.center(sunsetChallengeLocation)
+    #         leftClick(sunsetChallenge_x, sunsetChallenge_y)
+    #     time.sleep(0.3)
+    #     # Click on OK Button
+    #     okLocation = pyautogui.locateOnScreen('Images\OK.png', grayscale=True, confidence=0.6)
+    #     if okLocation != None:
+    #         ok_x, ok_y = pyautogui.center(okLocation)
+    #         leftClick(ok_x, ok_y)
+    #     time.sleep(0.3)
+
+    #     # Click anywhere on the screen
+    #     leftClick(500,500)
+    #     time.sleep(0.3)
+    # # If Zero Attempt is shown
+    # if zeroAttemptLocation != None: 
+    #     zeroAttempt_x, zeroAttempt_y = pyautogui.center(zeroAttemptLocation)
+    # time.sleep(0.3)
+
+def auto_vip():
+    vipIconLocation = pyautogui.locateOnScreen(resource_path('Images\VIP.png'), grayscale=True, confidence=0.8)
+    if vipIconLocation != None:
+        vip_x, vip_y = pyautogui.center(vipIconLocation)
+        leftClick(vip_x, vip_y)
+    time.sleep(0.3)
+
+    vipClaim1Location = pyautogui.locateOnScreen(resource_path('Images\VIPClaim1.png'), grayscale=True, confidence=0.8)
+    if vipClaim1Location != None:
+        vip_x, vip_y = pyautogui.center(vipClaim1Location)
+        leftClick(vip_x, vip_y)
+    time.sleep(4) 
+    # Click anywhere on application
+    leftClick(500,500) 
+
+    vipClaim2Location = pyautogui.locateOnScreen(resource_path('Images\VIPClaim2.png'), grayscale=True, confidence=0.8)
+    if vipClaim2Location != None:
+        vip_x, vip_y = pyautogui.center(vipClaim2Location)
+        leftClick(vip_x, vip_y)
+    time.sleep(0.3)
+    # Click anywhere on application
+    leftClick(500,500)
+    time.sleep(0.3)
+
     # Exit out of VIP Window
-    click(1573,148)
+    vipExitLocation = pyautogui.locateOnScreen(resource_path('Images\VIPExit.png'), grayscale=True, confidence=0.8)
+    if vipExitLocation != None:
+        vip_x, vip_y = pyautogui.center(vipExitLocation)
+        leftClick(vip_x, vip_y)
+    time.sleep(0.3)
 
 # Still needs to be worked on 
 def auto_PVP():
@@ -289,7 +365,7 @@ def auto_PVP():
     time.sleep(1)
     # Keeps challenging until no more attempts
     attemptsLocation = pyautogui.locateOnScreen('./Images/attempts.png', grayscale=True, confidence=0.8)
-    while attemptsLocation != None: 
+    while attemptsLocation == None: 
         print("Available attempts")
         click(1361,881)
 
@@ -300,7 +376,19 @@ def auto_PVP():
         time.sleep(2)
         # Click to continue 
         click(941,945)
-        print("No more attempts")
+    # If no more attempts
+    time.sleep(0.5)
+    print("No more attempts")
+    # Exit out of window
+    click(1602,88)
+
+    time.sleep(0.3)
+    # Exit out of window #2 
+    click(98,103)
+
+    time.sleep(0.5)
+    # Exit out of window #3
+    click(98,103) 
 
 def auto_train():
     time.sleep(0.5)
@@ -439,6 +527,24 @@ def auto_train():
             print("It does not see train button")
             time.sleep(0.3)
             click(1585, 148)
+
+def all_auto_1():
+    print("Running All Auto 1")
+    reset() 
+    auto_help()
+    auto_prod()
+    auto_territory()
+    auto_train()
+    # Reset for auto_recruit to work
+    reset()
+    auto_recruit()
+    print("End of All Auto 1")
+
+def full_auto():
+    all_auto_1()
+    auto_vip()
+    auto_expedition()
+    auto_PVP()
 
 app = Application()
 app.mainloop()
